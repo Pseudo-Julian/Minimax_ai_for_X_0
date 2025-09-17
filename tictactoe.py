@@ -89,6 +89,8 @@ def winner(board):
     if sum(cell == EMPTY for row in board for cell in row) == 0:
         return None
 
+    return None
+
 
 def terminal(board):
     """
