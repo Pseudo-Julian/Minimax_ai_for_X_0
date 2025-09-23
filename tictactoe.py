@@ -1,7 +1,4 @@
-"""
-Tic Tac Toe Player
-"""
-
+import copy
 import math
 
 X = "X"
@@ -46,12 +43,20 @@ def actions(board):
     return set_of_actions
 
 
-
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+    new_board = copy.deepcopy(board)
+    i, j = action
+    if new_board[i][j] == EMPTY:
+        if player(board) == X:
+            new_board[i][j] = X
+        if player(board) == O:
+            new_board[i][j] = O
+        return new_board
+    else:
+        raise Exception("Invalid action")
 
 
 def winner(board):
@@ -116,7 +121,12 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    if winner(board) == X:
+        return 1
+    elif winner(board) == O:
+        return -1
+    elif winner(board) == EMPTY:
+        return 0
 
 
 def minimax(board):
