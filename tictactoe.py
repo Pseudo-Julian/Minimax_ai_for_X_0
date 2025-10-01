@@ -1,5 +1,6 @@
 import copy
 import math
+import random
 
 X = "X"
 O = "O"
@@ -133,4 +134,7 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    i, j = random.randint(0, 2), random.randint(0, 2)
+    while board[i][j] != EMPTY:
+        i, j = random.randint(0, 2), random.randint(0, 2)
+    return (i, j)
