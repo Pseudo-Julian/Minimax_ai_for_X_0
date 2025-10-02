@@ -96,9 +96,9 @@ while True:
         if game_over:
             winner = ttt.winner(board)
             if winner is None:
-                title = f"Game Over: Tie."
+                title = f"Game Over: Tie :)"
             else:
-                title = f"Game Over: {winner} wins."
+                title = f"Game Over: {winner} wins (^_^)"
         elif user == player:
             title = f"Play as {user}"
         else:
@@ -112,7 +112,7 @@ while True:
         if user != player and not game_over:
             if ai_turn:
                 time.sleep(0.5)
-                move = ttt.minimax(board)
+                move = ttt.minimax_wrapper(board)
                 board = ttt.result(board, move)
                 ai_turn = False
             else:
@@ -124,7 +124,7 @@ while True:
             mouse = pygame.mouse.get_pos()
             for i in range(3):
                 for j in range(3):
-                    if (board[i][j] == ttt.EMPTY and tiles[i][j].collidepoint(mouse)):
+                    if board[i][j] == ttt.EMPTY and tiles[i][j].collidepoint(mouse):
                         board = ttt.result(board, (i, j))
 
         if game_over:

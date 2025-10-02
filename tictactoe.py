@@ -1,10 +1,12 @@
 import copy
 import math
-import random
+import sys
 
 X = "X"
 O = "O"
 EMPTY = None
+MAX = True
+MIN = False
 
 
 def initial_state():
@@ -130,11 +132,51 @@ def utility(board):
         return 0
 
 
-def minimax(board):
+def minimax(board, board_copy, depth, is_maximizing):
+    if winner(board_copy) == player(board):
+        return 1
+    if winner(board_copy) == player(board_copy):
+        return -1
+    if winner(board_copy) == EMPTY:
+        return 0
+
+    if is_maximizing:
+        best_score = -sys.maxsize
+        for i in range(3):
+            for j in range(3):
+                if board_copy[i][j] == EMPTY:
+                    board_copy[i][j] = player(board)
+                    score = minimax(board, board, depth + 1, MIN)
+                    board_copy[i][j] = EMPTY
+                    best_score = max(best_score, score)
+    else:
+        best_score = sys.maxsize
+        for i in range(3):
+            for j in range(3):
+                if board_copy[i][j] == EMPTY:
+                    board_copy[i][j] = player(board_copy)
+                    score = minimax(board, board, depth + 1, MAX)
+                    board_copy[i][j] = EMPTY
+                    best_score = min(best_score, score)
+    return best_score
+
+
+def minimax_wrapper(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    i, j = random.randint(0, 2), random.randint(0, 2)
-    while board[i][j] != EMPTY:
-        i, j = random.randint(0, 2), random.randint(0, 2)
-    return (i, j)
+    board_copy = copy.deepcopy(board)
+    move = None
+    best_score = -sys.maxsize
+
+    for i in range(3):
+        for j in range(3):
+            if board_copy[i][j] == EMPTY:
+                board_copy[i][j] = player(board)
+                score = minimax(board, board_copy, 0, MIN)
+                board_copy[i][j] = EMPTY
+                if score > best_score:
+                    best_score = score
+                    move = (i, j)
+
+    return move
