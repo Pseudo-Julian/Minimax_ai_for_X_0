@@ -1,10 +1,12 @@
 import copy
 import math
-import random
+import sys
 
 X = "X"
 O = "O"
 EMPTY = None
+MAX = True
+MIN = False
 
 
 def initial_state():
@@ -130,11 +132,60 @@ def utility(board):
         return 0
 
 
-def minimax(board):
+def minimax(board_copy, turn):
+    if winner(board_copy) == X:
+        return 1
+    if winner(board_copy) == O:
+        return -1
+    if terminal(board_copy):
+        return 0
+
+    if turn == X:
+        best_score = -sys.maxsize
+        for i in range(3):
+            for j in range(3):
+                if board_copy[i][j] == EMPTY:
+                    board_copy[i][j] = X
+                    score = minimax(board_copy, O)
+                    board_copy[i][j] = EMPTY
+                    best_score = max(best_score, score)
+    else:
+        best_score = sys.maxsize
+        for i in range(3):
+            for j in range(3):
+                if board_copy[i][j] == EMPTY:
+                    board_copy[i][j] = O
+                    score = minimax(board_copy, X)
+                    board_copy[i][j] = EMPTY
+                    best_score = min(best_score, score)
+
+    return best_score
+
+
+def minimax_wrapper(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    i, j = random.randint(0, 2), random.randint(0, 2)
-    while board[i][j] != EMPTY:
-        i, j = random.randint(0, 2), random.randint(0, 2)
-    return (i, j)
+    turn = player(board)
+    board_copy = copy.deepcopy(board)
+    move = None
+    if turn == X:
+        best_score = -sys.maxsize
+    else:
+        best_score = sys.maxsize
+
+    for i in range(3):
+        for j in range(3):
+            if board_copy[i][j] == EMPTY:
+                board_copy[i][j] = player(board)
+                score = minimax(board_copy, O if turn == X else X)
+                board_copy[i][j] = EMPTY
+
+                if turn == X and score > best_score:
+                    best_score = score
+                    move = (i, j)
+                elif turn == O and score < best_score:
+                    best_score = score
+                    move = (i, j)
+
+    return move
